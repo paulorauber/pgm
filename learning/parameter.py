@@ -141,6 +141,7 @@ class UniformDirichlet(BayesianNetworkEstimator):
 
 
 class ExpectationMaximization:
+
     """Performs parameter estimation for data sets with missing data using a
     expectation maximization algorithm.
 
@@ -164,7 +165,7 @@ class ExpectationMaximization:
     n_restarts: int
         The number of times the optimization is repeated from the beginning,
         (very) likely using different initial parameters. In the end, only the
-        maximum expected log-likelihood model is kept.
+        maximum log-likelihood model is kept.
     alpha: float
         Equivalent sample size for initializing the parameters for each
         (unknown) CPD according to a Dirichlet distribution.
@@ -242,7 +243,7 @@ class ExpectationMaximization:
         """
         var_index = {v: i for (i, v) in enumerate(self.scope)}
 
-        best_ell = float('-inf')
+        best_ll = float('-inf')
         best_bn = None
         for irestart in range(self.n_restarts):
             if self.verbose > 0:
@@ -293,14 +294,14 @@ class ExpectationMaximization:
                 self.bn = BayesianNetwork(
                     [M.to_cpd() for M in ess] + known_cpds)
 
-                ell = self.expected_log_likelihood(X, self.bn)
+                ll = self.log_likelihood(X, self.bn)
                 if self.verbose > 1:
                     print('Iteration {0}. '
-                          'Expected log-likelihood {1}.'.format(iiteration + 1,
-                                                                ell))
+                          'Current log-likelihood {1}.'.format(iiteration + 1,
+                                                               ll))
 
-                if ell > best_ell:
-                    best_ell = ell
+                if ll > best_ll:
+                    best_ll = ll
                     best_bn = self.bn
 
         self.bn = best_bn
@@ -310,10 +311,10 @@ class ExpectationMaximization:
     def fit_predict(self, X, graph):
         return self.fit(X, graph).bn
 
-    def expected_log_likelihood(self, X, bn):
+    def log_likelihood(self, X, bn):
         var_index = {v: i for (i, v) in enumerate(self.scope)}
 
-        ell = 0
+        ll = 0
         for x in X:
             hidden = []
             for (i, xi) in enumerate(x):
@@ -327,6 +328,6 @@ class ExpectationMaximization:
 
             assg = x[[var_index[v] for v in f.scope]]
 
-            ell += np.log(f.values[f.atoi(assg)])
+            ll += np.log(f.values[f.atoi(assg)])
 
-        return ell
+        return ll

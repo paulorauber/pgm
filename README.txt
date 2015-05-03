@@ -11,7 +11,6 @@ This software is licensed under the MIT License.
 
 Features
 --------
-
 Models:
     Bayesian network (table conditional probability distributions)
     Markov network (table potentials)

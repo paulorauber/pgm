@@ -55,7 +55,7 @@ def die():
                                  verbose=verbose)
 
     print('True log-likelihood (no missing variables):')
-    print(em.expected_log_likelihood(X, bn))
+    print(em.log_likelihood(X, bn))
 
     print('Maximum log-likelihood (no missing variables):')
     ls = LikelihoodScore(scope)
@@ -65,12 +65,12 @@ def die():
     # Hiding variable
     X[:, scope.index(h)] = -1
 
-    print('True expected log-likelihood (missing variables):')
-    print(em.expected_log_likelihood(X, bn))
+    print('True log-likelihood (missing variables):')
+    print(em.log_likelihood(X, bn))
 
     bn_pred = em.fit_predict(X, bn.graph())
-    print('Best expected log-likelihood (missing variables)')
-    print(em.expected_log_likelihood(X, bn_pred))
+    print('Best log-likelihood (missing variables)')
+    print(em.log_likelihood(X, bn_pred))
 
     # Estimation results
     print('Results:')
