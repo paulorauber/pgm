@@ -16,10 +16,10 @@ def die():
     # d2_ = [0.2, 0.3, 0.1, 0.05, 0.05, 0.3]
     d1_ = [0.1, 0.9]
     d2_ = [0.6, 0.4]
-    n_samples = 1000
+    n_samples = 5000
 
-    n_iterations = 20
-    n_restarts = 5
+    n_iterations = 10
+    n_restarts = 2
     verbose = 2
 
     # Model creation
@@ -78,6 +78,8 @@ def die():
     f_o2_h = [f for f in bn_pred.factors if f.scope[0] == o2][0]
 
     d = np.zeros(o1.k)
+    d1 = np.zeros(o1.k)
+    d2 = np.zeros(o1.k)
 
     with printoptions(precision=3):
         print('d1: {0}'.format(d1_))
@@ -85,19 +87,27 @@ def die():
         for i in range(o1.k):
             d[i] = f_o1_h.values[f_o1_h.atoi([i, 0])]
         print('d1 according to o1: {0}'.format(d))
+        d1 += d
 
         for i in range(o2.k):
             d[i] = f_o2_h.values[f_o2_h.atoi([i, 1])]
         print('d1 according to o2: {0}'.format(d))
+        d1 += d
 
         print('d2: {0}'.format(d2_))
         for i in range(o1.k):
             d[i] = f_o1_h.values[f_o1_h.atoi([i, 1])]
         print('d2 according to o1: {0}'.format(d))
+        d2 += d
 
         for i in range(o2.k):
             d[i] = f_o2_h.values[f_o2_h.atoi([i, 0])]
         print('d2 according to o2: {0}'.format(d))
+        d2 += d
+
+        print('Average estimate:')
+        print('d1: {0}'.format(d1/2.))
+        print('d2: {0}'.format(d2/2.))
 
 
 @contextlib.contextmanager

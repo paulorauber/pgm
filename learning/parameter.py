@@ -170,7 +170,7 @@ class ExpectationMaximization:
         Equivalent sample size for initializing the parameters for each
         (unknown) CPD according to a Dirichlet distribution.
     verbose: int
-        Verbosity level between 0 and 2 (inclusive).
+        Verbosity level between 0 and 3 (inclusive).
 
     Attributes
     ----------
@@ -294,15 +294,17 @@ class ExpectationMaximization:
                 self.bn = BayesianNetwork(
                     [M.to_cpd() for M in ess] + known_cpds)
 
-                ll = self.log_likelihood(X, self.bn)
                 if self.verbose > 1:
-                    print('Iteration {0}. '
-                          'Current log-likelihood {1}.'.format(iiteration + 1,
-                                                               ll))
+                    print('Iteration {0}. '.format(iiteration + 1))
+                if self.verbose > 2:
+                    ll = self.log_likelihood(X, self.bn)
+                    print('Current log-likelihood {0}.'.format(ll))
 
-                if ll > best_ll:
-                    best_ll = ll
-                    best_bn = self.bn
+            ll = self.log_likelihood(X, self.bn)
+            print('Final log-likelihood {0}.'.format(ll))
+            if ll > best_ll:
+                best_ll = ll
+                best_bn = self.bn
 
         self.bn = best_bn
 
